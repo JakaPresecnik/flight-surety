@@ -7,7 +7,7 @@ contract('Flight Surety Tests', async (accounts) => {
   var config;
   before('setup contract', async () => {
     config = await Test.Config(accounts);
-    await config.flightSuretyData.authorizeCaller(config.flightSuretyApp.address);
+    //await config.flightSuretyData.authorizeCaller(config.flightSuretyApp.address);
   });
 
   /****************************************************************************************/
@@ -89,6 +89,15 @@ contract('Flight Surety Tests', async (accounts) => {
     assert.equal(result, false, "Airline should not be able to register another airline if it hasn't provided funding");
 
   });
- 
+
+  it('(passenger) can buy insurence for up to 1 ether', async () => {
+    let passenger = accounts[3];
+    const amount = 5000000
+
+    await config.flightSuretyData.buy(1, {from: passenger, value: amount});
+    let result = await config.flightSuretyData.getPassenger.call(passenger, 1);
+
+    assert.equal(result, amount, ' Passenger deposit does not equal the amount sent' );
+  });
 
 });
